@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Share File{% endblock %}
+{% block content %}
+<div class="card shadow-sm mx-auto" style="max-width: 850px;">
+    <div class="card-body">
+        <h3>Share File</h3>
+        <p><strong>{{ file["original_name"] }}</strong></p>
+        <p class="text-muted">This AWS S3 link expires in 1 hour.</p>
+
+        <div class="input-group">
+            <input id="shareUrl" class="form-control" value="{{ share_url }}" readonly>
+            <button class="btn btn-success" onclick="copyLink()">Copy Link</button>
+        </div>
+
+        <a href="{{ share_url }}" target="_blank" class="btn btn-primary mt-3">
+            Open Link
+        </a>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary mt-3">
+            Back
+        </a>
+    </div>
+</div>
+
+<script>
+function copyLink() {
+    const input = document.getElementById("shareUrl");
+    navigator.clipboard.writeText(input.value);
+    alert("Shareable link copied!");
+}
+</script>
+{% endblock %}

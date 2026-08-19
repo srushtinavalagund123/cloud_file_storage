@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2>My Cloud Files</h2>
+        <p class="text-muted mb-0">Files are stored securely in AWS S3.</p>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <div class="stat-card">
+            <h6>Total Files</h6>
+            <h3>{{ total_files }}</h3>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="stat-card">
+            <h6>Storage Used</h6>
+            <h3>{{ "%.2f"|format(total_size / 1024 / 1024) }} MB</h3>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <h5>Upload a File</h5>
+        <p class="text-muted">Maximum size: 10 MB</p>
+        <form action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
+            <div class="input-group">
+                <input type="file" name="file" class="form-control" required>
+                <button class="btn btn-primary">Upload to AWS S3</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h5 class="mb-3">My Files</h5>
+
+        {% if files %}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>File Name</th>
+                        <th>Size</th>
+                        <th>Uploaded</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for file in files %}
+                    <tr>
+                        <td>📄 {{ file["original_name"] }}</td>
+                        <td>{{ "%.2f"|format(file["size"] / 1024) }} KB</td>
+                        <td>{{ file["uploaded_at"][:19].replace("T", " ") }}</td>
+                        <td class="text-nowrap">
+                            <a href="{{ url_for('view_file', file_id=file['id']) }}"
+                               class="btn btn-sm btn-info">View</a>
+
+                            <a href="{{ url_for('download_file', file_id=file['id']) }}"
+                               class="btn btn-sm btn-primary">Download</a>
+
+                            <a href="{{ url_for('share_file', file_id=file['id']) }}"
+                               class="btn btn-sm btn-success">Share</a>
+
+                            <form action="{{ url_for('delete_file', file_id=file['id']) }}"
+                                  method="POST" class="d-inline"
+                                  onsubmit="return confirm('Delete this file?');">
+                                <button class="btn btn-sm btn-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+            <div class="text-center py-5">
+                <h5>No files uploaded yet.</h5>
+                <p class="text-muted">Choose a file above to upload it to AWS S3.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

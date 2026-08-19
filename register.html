@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Register{% endblock %}
+{% block content %}
+<div class="auth-card">
+    <h2 class="text-center mb-4">Create Account</h2>
+    <form method="POST">
+        <div class="mb-3">
+            <label class="form-label">Full Name</label>
+            <input type="text" name="name" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="password" name="password" class="form-control"
+                   minlength="8" required>
+            <small class="text-muted">Minimum 8 characters.</small>
+        </div>
+        <button class="btn btn-success w-100">Register</button>
+    </form>
+    <p class="text-center mt-3">
+        Already registered?
+        <a href="{{ url_for('login') }}">Login</a>
+    </p>
+</div>
+{% endblock %}
